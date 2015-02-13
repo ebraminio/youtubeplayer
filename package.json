@@ -1,0 +1,14 @@
+{
+  "name": "pr",
+  "version": "0.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "BSD",
+  "description": "ERROR: No README.md file found!",
+  "dependencies": {
+    "node-fastcgi": "^0.1.9",
+    "ytdl-core": "^0.4.1"
+  }
+}

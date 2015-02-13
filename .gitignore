@@ -1,0 +1,7 @@
+.*_history
+.npm/
+*.log
+iojs/
+node_modules/
+replica.my.cnf
+.viminfo
