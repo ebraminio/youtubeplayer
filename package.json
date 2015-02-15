@@ -8,6 +8,7 @@
   "license": "BSD",
   "description": "ERROR: No README.md file found!",
   "dependencies": {
+    "node-cache": "^1.1.0",
     "node-fastcgi": "^0.1.9",
     "ytdl-core": "^0.4.1"
   }
