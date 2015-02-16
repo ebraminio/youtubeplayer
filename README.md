@@ -9,7 +9,7 @@ mv iojs-v1.2.0-linux-x64 iojs
 iojs/bin/npm install
 iojs/bin/iojs server.js
 ```
-Run `iojs/bin/iojs server.js PORT` to use with alternative if you want.
+Run `iojs/bin/iojs server.js PORT` to use with an alternative PORT.
 
 Usage:
 `http://HOST:19876/https://www.youtube.com/watch?v=hIUcGhUGFvg`, `http://HOST:19876/watch?v=hIUcGhUGFvg` or `http://HOST:19876/watch?v=hIUcGhUGFvg` works equally.
