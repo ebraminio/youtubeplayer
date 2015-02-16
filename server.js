@@ -4,7 +4,7 @@ var url = require('url');
 var querystring = require('querystring');
 var ytdl = require('ytdl-core');
 
-function readRangeHeader(range, totalLength) {
+function readRangeHeader(range, total) {
   if (!range) { return; }
   var positions = range.replace('bytes=', '').split('-');
 
@@ -13,17 +13,17 @@ function readRangeHeader(range, totalLength) {
 
   var result = {
     start: isNaN(start) ? 0 : start,
-    end: isNaN(end) ? (totalLength - 1) : end
+    end: isNaN(end) ? (total - 1) : end
   };
 
   if (!isNaN(start) && isNaN(end)) {
     result.start = start;
-    result.end = totalLength - 1;
+    result.end = total - 1;
   }
 
   if (isNaN(start) && !isNaN(end)) {
-    result.start = totalLength - end;
-    result.end = totalLength - 1;
+    result.start = total - end;
+    result.end = total - 1;
   }
 
   return result;
@@ -79,7 +79,7 @@ function server(req, res) {
   var videoId = query.v;
   var itag = +query.itag || 43;
   if (videoId) {
-    youtubeInfo(videoId).then(function () {
+    youtubeInfo(videoId).then(function (info) {
       res.writeHead(302, { 'Location': '/pr/' + info.title.replace(/ /g, '_') + ' ' + videoId + '.webm' });
       res.end();
     }, function (e) {
