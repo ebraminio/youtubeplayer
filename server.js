@@ -98,7 +98,7 @@ function server(req, res) {
 
   youtubeInfo(videoId).then(function (info) {
     if (req.url.endsWith('?info')) {
-      res.writeHead(200, { 'Content-Type': 'text/plain' });
+      res.writeHead(200, { 'Content-Type': 'application/json;charset=utf8' });
       res.end(JSON.stringify(info, 2, 2));
       return;
     }
