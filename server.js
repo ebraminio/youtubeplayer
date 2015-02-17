@@ -106,7 +106,7 @@ function server(req, res) {
       res.writeHead(200, { 'Content-Type': 'text/html' });
       res.end('<form method="GET"><select name="itag">' + info.formats.map(function (x) {
         return `<option value="${x.itag}">
-${x.container} ${x.resolution || 'audio'} ${x.audioBitrate ? '' : 'no audio'}
+${x.container} ${x.resolution || 'audio'} ${x.audioBitrate ? '' : 'mute'}
 </option>`;
       }).join('\n') + '</select><input type="submit"></form>');
       return;
