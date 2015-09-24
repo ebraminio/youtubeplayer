@@ -1,6 +1,6 @@
 # Youtube Player #
 ```bash
-git clone https://bitbucket.org/ebraminio/youtubeplayer
+git clone https://github.com/ebraminio/youtubeplayer
 cd youtubeplayer
 wget https://iojs.org/dist/v1.2.0/iojs-v1.2.0-linux-x64.tar.xz
 tar xf iojs-v1.2.0-linux-x64.tar.xz
