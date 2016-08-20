@@ -80,11 +80,15 @@ function server(req, res) {
   var itag = +query.itag || 43;
   if (videoId) {
     youtubeInfo(videoId).then(function (info) {
-      res.writeHead(302, { 'Location': '/pr/' + info.title.replace(/ /g, '_') + ' ' + videoId + '.webm' });
+      res.writeHead(302, {
+        'Location': '/pr/' +
+           encodeURIComponent(info.title.replace(/ /g, '_')) + ' ' + videoId +
+           '.webm'
+      });
       res.end();
     }, function (e) {
       res.writeHead(404);
-      res.end('Seems the link you\'ve given is broken');
+      res.end('It seems the link you\'ve given is broken');
     });
     return;
   }
@@ -97,17 +101,17 @@ function server(req, res) {
   }
 
   youtubeInfo(videoId).then(function (info) {
-    if (req.url.endsWith('?info')) {
+    if (/\?info$/.test(req.url)) {
       res.writeHead(200, { 'Content-Type': 'application/json;charset=utf8' });
       res.end(JSON.stringify(info, 2, 2));
       return;
     }
-    if (req.url.endsWith('?list')) {
+    if (/\?list$/.test(req.url)) {
       res.writeHead(200, { 'Content-Type': 'text/html' });
       res.end('<form method="GET"><select name="itag">' + info.formats.map(function (x) {
-        return `<option value="${x.itag}">
-${x.container} ${x.resolution || 'audio'} ${x.audioBitrate ? '' : 'mute'}
-</option>`;
+        return '<option value="' + x.itag + '">' + x.container + ' ' +
+          (x.resolution || 'audio') + ' ' + (x.audioBitrate ? '' : 'mute') +
+          '</option>';
       }).join('\n') + '</select><input type="submit"></form>');
       return;
     }
@@ -156,15 +160,11 @@ ${x.container} ${x.resolution || 'audio'} ${x.audioBitrate ? '' : 'mute'}
     });
   }, function (e) {
     res.writeHead(404);
-    res.end('Seems the link you\'ve given is broken');
+    res.end('It seems the link you\'ve given is broken');
   });
 }
 
-if (process.env.FCGI_MODE) { // called through fcgi
-  require('node-fastcgi').createServer(server).listen();
-} else { // called directly, development
-  var port = process.argv[2] || 19876;
-  require('http').createServer(server).listen(port, '0.0.0.0');
-  console.log('Server running at http://0.0.0.0:' + port + '/');
-}
+var port = process.argv[2] || 9090;
+require('http').createServer(server).listen(port, '0.0.0.0');
+console.log('Server running at all interfaces on ' + port + ', http://127.0.0.1:' + port + '/');
 

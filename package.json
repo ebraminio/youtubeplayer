@@ -1,15 +1,11 @@
 {
-  "name": "pr",
+  "name": "youtubeplayer",
   "version": "0.0.0",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "license": "BSD",
+  "license": "MIT",
   "description": "ERROR: No README.md file found!",
   "dependencies": {
     "node-cache": "^1.1.0",
-    "node-fastcgi": "^0.1.9",
     "ytdl-core": "^0.4.1"
   }
 }
