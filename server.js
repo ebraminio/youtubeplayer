@@ -36,18 +36,17 @@ function youtubeInfo(videoId) {
   var info = videoInfos.get(videoId);
   if (info && info.formats) {
     return Promise.resolve(info);
-  } else {
-    return new Promise(function (resolve, reject) {
-      ytdl.getInfo('http://youtu.be/' + videoId, {}, function (err, info) {
-        if (err || !info) {
-          reject(err);
-        } else {
-          videoInfos.set(videoId, info);
-          resolve(info);
-        }
-      });
-    });
   }
+  return new Promise(function (resolve, reject) {
+    ytdl.getInfo('http://youtu.be/' + videoId, {}, function (err, info) {
+      if (err || !info) {
+        reject(err);
+      } else {
+        videoInfos.set(videoId, info);
+        resolve(info);
+      }
+    });
+  });
 }
 
 var videoSizes = new NodeCache({ stdTTL: 2000, checkperiod: 1000 });
@@ -55,18 +54,17 @@ function youtubeSize(info, videoId, itag) {
   var size = +videoSizes.get(videoId + itag);
   if (size) {
     return Promise.resolve(size);
-  } else {
-    return new Promise(function (resolve, reject) {
-      ytdl.downloadFromInfo(info, { quality: itag }).on('format', function (format) {
-        if (format instanceof Error) {
-          reject(error);
-        } else {
-          videoSizes.set(videoId + itag, format.size);
-          resolve(format.size);
-        }
-      }).on('error', function () { reject('Not downloadable'); });
-    });
   }
+  return new Promise(function (resolve, reject) {
+    ytdl.downloadFromInfo(info, { quality: itag }).on('format', function (format) {
+      if (format instanceof Error) {
+        reject(error);
+      } else {
+        videoSizes.set(videoId + itag, format.size);
+        resolve(format.size);
+      }
+    }).on('error', function () { reject('Not downloadable'); });
+  });
 }
 
 function server(req, res) {
@@ -81,9 +79,8 @@ function server(req, res) {
   if (videoId) {
     youtubeInfo(videoId).then(function (info) {
       res.writeHead(302, {
-        'Location': '/pr/' +
-           encodeURIComponent(info.title.replace(/ /g, '_')) + ' ' + videoId +
-           '.webm'
+        'Location': encodeURIComponent(info.title.replace(/ /g, '_')) +
+          '-' + videoId + '.webm'
       });
       res.end();
     }, function (e) {
@@ -93,10 +90,14 @@ function server(req, res) {
     return;
   }
 
-  videoId = (/([a-zA-Z0-9_-]{11})\.(webm|mp4|flv|3gp)($|\?)/.exec(req.url) || {})[1];
+  videoId =
+    (/([a-zA-Z0-9_-]{11})\.(webm|mp4|flv|3gp)($|\?)/.exec(req.url) || {})[1];
   if (!videoId) {
-    res.writeHead(404);
-    res.end('Sorry, nothing really interesting is here');
+    res.writeHead(404, { 'Content-Type': 'text/html' });
+    res.end('<form method="GET">' +
+      '<input name="v" placeholder="Enter your Youtube link here">' +
+      '<input type="submit" onclick="document.forms[0].v.value = ' +
+        'document.forms[0].v.value.replace(/.*(\\/|=)/m, \'\')"></form>');
     return;
   }
 
@@ -145,8 +146,10 @@ function server(req, res) {
           });
         } else {
           res.writeHead(206, {
-            'Content-Range': 'bytes ' + range.start + '-' + range.end + '/' + size,
-            'Content-Length': range.start === range.end ? 0 : (range.end - range.start + 1),
+            'Content-Range':
+              'bytes ' + range.start + '-' + range.end + '/' + size,
+            'Content-Length':
+              range.start === range.end ? 0 : (range.end - range.start + 1),
             'Content-Type': format.type,
             'Accept-Ranges': 'bytes'
           });
@@ -166,5 +169,5 @@ function server(req, res) {
 
 var port = process.argv[2] || 9090;
 require('http').createServer(server).listen(port, '0.0.0.0');
-console.log('Server running at all interfaces on ' + port + ', http://127.0.0.1:' + port + '/');
-
+console.log('Server running at all interfaces on ' + port +
+  ', http://127.0.0.1:' + port + '/');
