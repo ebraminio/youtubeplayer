@@ -95,7 +95,7 @@ function server(req, res) {
   if (!videoId) {
     res.writeHead(404, { 'Content-Type': 'text/html' });
     res.end('<form method="GET">' +
-      '<input name="v" placeholder="Enter your Youtube link here">' +
+      '<input name="v" placeholder="Enter your YouTube link here">' +
       '<input type="submit" onclick="document.forms[0].v.value = ' +
         'document.forms[0].v.value.replace(/.*(\\/|=)/m, \'\')"></form>');
     return;
