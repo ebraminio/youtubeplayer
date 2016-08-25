@@ -1,4 +1,7 @@
-FROM node:slim
+FROM alpine
+RUN apk update && \
+    apk add nodejs
+
 WORKDIR /app
 ADD server.js /app/server.js
 ADD package.json /app/package.json
